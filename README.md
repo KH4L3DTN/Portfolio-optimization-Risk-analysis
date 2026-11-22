@@ -1,6 +1,6 @@
 # Portfolio Optimization and Risk Analysis
 
-This project applies mean-variance portfolio optimization to sector ETFs and gold. It compares classical allocation strategies, studies the effect of a 30% maximum asset weight, and evaluates every strategy on out-of-sample data.
+This project applies mean-variance portfolio optimization to 10 sector ETFs and a gold ETF. It compares optimized allocation strategies with the Equal Weight benchmark, studies the effect of a 30% maximum asset weight, and evaluates every strategy on out-of-sample data.
 
 The complete analysis is implemented in `Main.ipynb`.
 
@@ -8,14 +8,14 @@ The complete analysis is implemented in `Main.ipynb`.
 
 The central question is:
 
-> Can mean-variance optimization produce portfolios with better out-of-sample risk-adjusted performance than a simple equal-weight allocation, and how do diversification constraints affect the results?
+> Can mean-variance optimization produce portfolios with better out-of-sample risk-adjusted performance than the Equal Weight (1/N) allocation, and how do diversification constraints affect the results?
 
 ## Assets
 
 The portfolio contains 10 sector ETFs and one gold ETF:
 
 | Ticker | Asset |
-|---|---|
+| --- | --- |
 | IYW | Technology |
 | MOO | Agriculture |
 | XLP | Consumer Staples |
@@ -46,15 +46,15 @@ Adjusted closing prices account for distributions and other corporate actions. S
 2. Calculate daily returns, annualized returns, annualized volatility, and correlations.
 3. Divide the observations into a training period and a testing period.
 4. Generate and visualize 10,000 random portfolios.
-5. Calculate the efficient frontier with constrained quadratic optimization.
-6. Optimize five portfolio strategies using SLSQP:
-   - Equal Weight (1/N)
+5. Construct the efficient frontier by minimizing variance across 50 target returns.
+6. Use SLSQP to numerically optimize four portfolio strategies:
    - Global Minimum Variance
    - Global Minimum Variance with a 30% weight cap
    - Maximum Sharpe Ratio
    - Maximum Sharpe Ratio with a 30% weight cap
-7. Rebalance the test portfolios monthly with an initial capital of $10,000.
-8. Compare cumulative wealth, annualized return, volatility, Sharpe ratio, maximum drawdown, and CVaR.
+7. Use Equal Weight (1/N) as a non-optimized benchmark.
+8. Rebalance the test portfolios monthly with initial capital of USD 10,000.
+9. Compare cumulative wealth, annualized return, volatility, Sharpe ratio, maximum drawdown, and CVaR.
 
 All optimized weights are estimated exclusively from the 2016-2021 training data. The 2022-2025 testing period is used only for out-of-sample evaluation.
 
@@ -80,6 +80,20 @@ The notebook evaluates portfolio performance using:
 
 The Sharpe ratio uses the 3-month U.S. Treasury yield as the risk-free-rate proxy.
 
+## Results
+
+The following are the notebook's saved out-of-sample results for 2022-2025:
+
+| Strategy | Cumulative return | CAGR | Sharpe ratio |
+| --- | ---: | ---: | ---: |
+| GMV | 73.83% | 14.90% | 0.9222 |
+| Maximum Sharpe Ratio | 104.76% | 19.73% | 0.9152 |
+| Maximum Sharpe Ratio Capped | 72.47% | 14.68% | 0.6776 |
+| GMV Capped | 41.88% | 9.19% | 0.4773 |
+| Equal Weight | 42.99% | 9.40% | 0.4075 |
+
+The Maximum Sharpe Ratio portfolio had the highest cumulative return and CAGR, while GMV had the highest realized Sharpe ratio. These historical backtest results do not imply future performance.
+
 ## Notebook Structure
 
 The notebook contains:
@@ -103,6 +117,7 @@ The main Python dependencies are:
 - Seaborn
 - SciPy
 - yfinance
+- notebook
 
 The project includes a local virtual environment in `.venv`, but that folder should normally be excluded from GitHub rather than committed.
 
@@ -127,7 +142,7 @@ Activate the environment:
 Install dependencies:
 
 ```bash
-python -m pip install pandas numpy matplotlib seaborn scipy yfinance
+python -m pip install pandas numpy matplotlib seaborn scipy yfinance notebook
 ```
 
 Start Jupyter:
